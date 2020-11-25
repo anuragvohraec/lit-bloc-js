@@ -1,7 +1,11 @@
 {
   "name": "lit-bloc-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Lit-Html powered BLoc system for creating Javascript based UI.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anuragvohraec/lit-bloc-js.git"
+  },
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc"
