@@ -9,8 +9,7 @@ interface BuildWhenFunction<S>{
 
 export interface BlocBuilderConfig<B extends Bloc<S>, S>{
   useThisBloc?:B;
-  buildWhen: BuildWhenFunction<S>;
-  useShadow: boolean;
+  buildWhen?: BuildWhenFunction<S>;
 }
 
 export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
@@ -28,8 +27,7 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
           }else{
               return false;
           }
-      },
-      useShadow: false
+        }
       }
 
       this._configs={...defaultConfig, ...configs};
@@ -42,9 +40,7 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
     
 
     connectedCallback(){
-      if(this._configs.useShadow){
-        this.attachShadow({mode: 'open'});
-      }
+      this.attachShadow({mode: 'open'});
       this._initialize();
     }
     
@@ -58,7 +54,7 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
         this._prevState = this._bloc.state;
         
         this._subscriptionId = this._bloc._listen((newState: S)=>{
-            if(this._configs.buildWhen(this._prevState, newState)){
+            if(this._configs.buildWhen!(this._prevState, newState)){
               this._prevState = newState;
               this._build(newState);
             }
@@ -76,7 +72,7 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
     
     _build(state: S){
        let gui = this.builder(state);
-       render(gui,this._configs.useShadow?this.shadowRoot!:this);
+       render(gui,this.shadowRoot!);
     }
 
     abstract builder(state: S): TemplateResult;

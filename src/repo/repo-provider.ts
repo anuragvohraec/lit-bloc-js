@@ -5,14 +5,12 @@ interface _ClassTypes{
 }
 
 export abstract class ReposProvider extends HTMLElement{
-    constructor(private repos: any[], private useShadow:boolean=false){
+    constructor(private repos: any[]){
         super();
     }
 
     connectedCallback(){
-        if(this.useShadow){
-            this.attachShadow({mode: 'open'});
-        }
+        this.attachShadow({mode: 'open'});
         this._build();
     }
 
@@ -40,7 +38,7 @@ export abstract class ReposProvider extends HTMLElement{
 
     _build(){
         let gui = this.builder();
-        render(gui,this.useShadow?this.shadowRoot!:this);
+        render(gui,this.shadowRoot!);
      }
  
      abstract builder(): TemplateResult;

@@ -8,14 +8,12 @@ export  interface BlocType<S>{
 
 
 export abstract class BlocsProvider extends HTMLElement{
-    constructor(private blocs:Bloc<any>[], private useShadow:boolean=false){
+    constructor(private blocs:Bloc<any>[]){
         super();
     }
 
     connectedCallback(){
-        if(this.useShadow){
-            this.attachShadow({mode: 'open'});
-        }
+        this.attachShadow({mode: 'open'});
         this._build();
     }
 
@@ -45,7 +43,7 @@ export abstract class BlocsProvider extends HTMLElement{
 
     _build(){
         let gui = this.builder();
-        render(gui,this.useShadow?this.shadowRoot!:this);
+        render(gui,this.shadowRoot!);
      }
  
  

@@ -1,6 +1,6 @@
 {
   "name": "lit-bloc-js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Lit-Html powered BLoc system for creating Javascript based UI.",
   "repository": {
     "type": "git",
