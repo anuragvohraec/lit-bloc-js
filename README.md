@@ -93,3 +93,6 @@ class MyMaths extends ReposProvider{
 //and later the class can be retrieved an where in the dom tree.
 ReposProvider.of(Arithmatic, this);
 ```
+
+# Publishing
+Always run `npm run build` before each release.
