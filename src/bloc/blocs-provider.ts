@@ -8,8 +8,15 @@ export  interface BlocType<S>{
 
 
 export abstract class BlocsProvider extends HTMLElement{
-    constructor(private blocs:Bloc<any>[]){
+    constructor(private blocs:Bloc<any>[], private useShadow:boolean=false){
         super();
+    }
+
+    connectedCallback(){
+        if(this.useShadow){
+            this.attachShadow({mode: 'open'});
+        }
+        this._build();
     }
 
     _findBloc<B extends Bloc<S>,S>(blocType: BlocType<S>): B|undefined{
@@ -38,8 +45,9 @@ export abstract class BlocsProvider extends HTMLElement{
 
     _build(){
         let gui = this.builder();
-        render(gui,this);
+        render(gui,this.useShadow?this.shadowRoot!:this);
      }
+ 
  
      abstract builder(): TemplateResult;
 }

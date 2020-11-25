@@ -5,8 +5,15 @@ interface _ClassTypes{
 }
 
 export abstract class ReposProvider extends HTMLElement{
-    constructor(private repos: any[]){
+    constructor(private repos: any[], private useShadow:boolean=false){
         super();
+    }
+
+    connectedCallback(){
+        if(this.useShadow){
+            this.attachShadow({mode: 'open'});
+        }
+        this._build();
     }
 
     _findARepo<R, T extends _ClassTypes>(typeOfRepo: T): R|undefined{
@@ -33,7 +40,7 @@ export abstract class ReposProvider extends HTMLElement{
 
     _build(){
         let gui = this.builder();
-        render(gui,this);
+        render(gui,this.useShadow?this.shadowRoot!:this);
      }
  
      abstract builder(): TemplateResult;

@@ -7,19 +7,32 @@ interface BuildWhenFunction<S>{
     (previousState: S, newState: S): boolean;
 }
 
+export interface BlocBuilderConfig<B extends Bloc<S>, S>{
+  useThisBloc?:B;
+  buildWhen: BuildWhenFunction<S>;
+  useShadow: boolean;
+}
+
 export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
     private _bloc: B|undefined;
     private _subscriptionId!: string;
     private _prevState!: S;
+    private _configs: BlocBuilderConfig<B,S>;
   
-    constructor(private blocType: BlocType<S>, private useThisBloc?: B, private buildWhen: BuildWhenFunction<S>=(preState: S, newState:S)=>{
-        if(newState!==preState){
-            return true;
-        }else{
-            return false;
-        }
-    }){
+    constructor(private blocType: BlocType<S>, configs?: BlocBuilderConfig<B,S>){
       super();
+      let defaultConfig: BlocBuilderConfig<B,S>={
+        buildWhen: (preState: S, newState:S)=>{
+          if(newState!==preState){
+              return true;
+          }else{
+              return false;
+          }
+      },
+      useShadow: false
+      }
+
+      this._configs={...defaultConfig, ...configs};
     }
 
     
@@ -29,20 +42,23 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
     
 
     connectedCallback(){
-        this._initialize();
+      if(this._configs.useShadow){
+        this.attachShadow({mode: 'open'});
+      }
+      this._initialize();
     }
     
 
     _initialize(){
       //find the bloc
-      this._bloc = this.useThisBloc ? this.useThisBloc: BlocsProvider.of<B,S>(this.blocType,this);
+      this._bloc = this._configs.useThisBloc ? this._configs.useThisBloc: BlocsProvider.of<B,S>(this.blocType,this);
 
       //if bloc is found;
       if(this._bloc){
         this._prevState = this._bloc.state;
         
         this._subscriptionId = this._bloc._listen((newState: S)=>{
-            if(this.buildWhen(this._prevState, newState)){
+            if(this._configs.buildWhen(this._prevState, newState)){
               this._prevState = newState;
               this._build(newState);
             }
@@ -60,7 +76,7 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
     
     _build(state: S){
        let gui = this.builder(state);
-       render(gui,this);
+       render(gui,this._configs.useShadow?this.shadowRoot!:this);
     }
 
     abstract builder(state: S): TemplateResult;
