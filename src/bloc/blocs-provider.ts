@@ -1,5 +1,6 @@
 import { Bloc } from "./bloc";
 import { render, TemplateResult } from "lit-html";
+import { BlocBuilder } from "./bloc-builder";
 
 export  interface BlocType<S>{
     new(): Bloc<S>
@@ -27,8 +28,11 @@ export abstract class BlocsProvider extends HTMLElement{
                 if(found_bloc){
                     return found_bloc;
                 }
+            } else if(currentEl instanceof BlocBuilder && currentEl.bloc?.constructor.name === blocType.name){
+                return currentEl.bloc;
             }
-            currentEl = currentEl.parentElement;
+            let t: HTMLElement|null = currentEl.parentElement;
+            currentEl = t;
         }
     }
 

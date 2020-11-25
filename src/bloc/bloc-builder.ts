@@ -12,7 +12,7 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
     private _subscriptionId!: string;
     private _prevState!: S;
   
-    constructor(private blocType: BlocType<S>, private buildWhen: BuildWhenFunction<S>=(preState: S, newState:S)=>{
+    constructor(private blocType: BlocType<S>, private useThisBloc?: B, private buildWhen: BuildWhenFunction<S>=(preState: S, newState:S)=>{
         if(newState!==preState){
             return true;
         }else{
@@ -35,7 +35,7 @@ export abstract class BlocBuilder<B extends Bloc<S>, S> extends HTMLElement{
 
     _initialize(){
       //find the bloc
-      this._bloc = BlocsProvider.of<B,S>(this.blocType,this);
+      this._bloc = this.useThisBloc ? this.useThisBloc: BlocsProvider.of<B,S>(this.blocType,this);
 
       //if bloc is found;
       if(this._bloc){
