@@ -26,6 +26,7 @@ export abstract class ReposProvider extends HTMLElement{
                     return found_repo;
                 }
             }
+            currentEl = currentEl.parentElement;
         }
     }
 

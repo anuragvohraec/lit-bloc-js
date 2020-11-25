@@ -28,7 +28,7 @@ export abstract class BlocsProvider extends HTMLElement{
                     return found_bloc;
                 }
             }
-            currentEl = startingElement.parentElement;
+            currentEl = currentEl.parentElement;
         }
     }
 
