@@ -1,4 +1,5 @@
 import { TemplateResult, render } from "lit-html";
+import { OtherBlocSearchCriteria } from "../bloc/blocs-provider";
 
 interface _ClassTypes{
     name: string
@@ -22,13 +23,15 @@ export abstract class ReposProvider extends HTMLElement{
         }
     }
 
-    static of<R,T extends _ClassTypes>(repoType: T, startingElement: HTMLElement){
+    static of<R,T extends _ClassTypes>(repoType: T, startingElement: HTMLElement,otherSearchCriteria: OtherBlocSearchCriteria=(currentEl: HTMLElement)=>true){
         let currentEl: HTMLElement|null = startingElement;
         while(currentEl){
-            if(currentEl instanceof ReposProvider){
-                let found_repo = currentEl._findARepo<R,T>(repoType);
-                if(found_repo){
-                    return found_repo;
+            if(otherSearchCriteria(currentEl)){
+                if(currentEl instanceof ReposProvider){
+                    let found_repo = currentEl._findARepo<R,T>(repoType);
+                    if(found_repo){
+                        return found_repo;
+                    }
                 }
             }
             let t: HTMLElement|null = currentEl.parentElement;

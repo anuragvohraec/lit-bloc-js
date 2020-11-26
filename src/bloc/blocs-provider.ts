@@ -6,6 +6,9 @@ export  interface BlocType<S>{
     new(): Bloc<S>
 }
 
+export interface OtherBlocSearchCriteria{
+    (currentEl: HTMLElement): boolean;
+}
 
 export abstract class BlocsProvider extends HTMLElement{
     constructor(private blocs:Bloc<any>[]){
@@ -25,16 +28,18 @@ export abstract class BlocsProvider extends HTMLElement{
         }
     }
 
-    static of<B extends Bloc<S>,S>(blocType: BlocType<S>, startingElement:HTMLElement){
+    static of<B extends Bloc<S>,S>(blocType: BlocType<S>, startingElement:HTMLElement, otherSearchCriteria: OtherBlocSearchCriteria=(currentEl: HTMLElement)=>true){
         let currentEl: HTMLElement|null = startingElement;
         while(currentEl){
-            if(currentEl instanceof BlocsProvider){
-                let found_bloc = currentEl._findBloc<B,S>(blocType);
-                if(found_bloc){
-                    return found_bloc;
+            if(otherSearchCriteria(currentEl)){
+                if(currentEl instanceof BlocsProvider){
+                    let found_bloc = currentEl._findBloc<B,S>(blocType);
+                    if(found_bloc){
+                        return found_bloc;
+                    }
+                } else if(currentEl instanceof BlocBuilder && currentEl.bloc?.constructor.name === blocType.name){
+                    return currentEl.bloc;
                 }
-            } else if(currentEl instanceof BlocBuilder && currentEl.bloc?.constructor.name === blocType.name){
-                return currentEl.bloc;
             }
             let t: HTMLElement|null = currentEl.parentElement;
             currentEl = t;
