@@ -28,7 +28,7 @@ export abstract class BlocsProvider extends HTMLElement{
         }
     }
 
-    static of<B extends Bloc<S>,S>(blocType: BlocType<S>, startingElement:HTMLElement, otherSearchCriteria: OtherBlocSearchCriteria=(currentEl: HTMLElement)=>true){
+    static of<B extends Bloc<S>,S>(blocType: BlocType<S>, startingElement:HTMLElement, otherSearchCriteria: OtherBlocSearchCriteria=(currentEl: HTMLElement)=>true): B|undefined{
         let currentEl: HTMLElement|null = startingElement;
         while(currentEl){
             if(otherSearchCriteria(currentEl)){

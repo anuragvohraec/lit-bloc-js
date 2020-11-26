@@ -23,7 +23,7 @@ export abstract class ReposProvider extends HTMLElement{
         }
     }
 
-    static of<R,T extends _ClassTypes>(repoType: T, startingElement: HTMLElement,otherSearchCriteria: OtherBlocSearchCriteria=(currentEl: HTMLElement)=>true){
+    static of<R,T extends _ClassTypes>(repoType: T, startingElement: HTMLElement,otherSearchCriteria: OtherBlocSearchCriteria=(currentEl: HTMLElement)=>true): R|undefined{
         let currentEl: HTMLElement|null = startingElement;
         while(currentEl){
             if(otherSearchCriteria(currentEl)){
